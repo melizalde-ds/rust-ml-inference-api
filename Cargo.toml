@@ -1,0 +1,9 @@
+[package]
+name = "rust-ml-inference-api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = { version = "0.8.3", features = ["default", "macros"] }
+tokio = { version = "1.35", features = ["full"] }
+anyhow = "1.0.98"
