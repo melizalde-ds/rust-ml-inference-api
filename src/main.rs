@@ -21,7 +21,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/healthz", get(healthcheck))
         .nest("/predict", api::router(inference.clone()));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     let listener = TcpListener::bind(addr).await?;
     let _ = axum::serve(listener, app).await?;
     Ok(())
