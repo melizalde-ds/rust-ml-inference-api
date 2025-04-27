@@ -6,14 +6,9 @@ mod models;
 use crate::inference::{load_session, InferenceImpl};
 use axum::routing::get;
 use axum::Router;
-use ort::session::Session;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::TcpListener;
-
-pub struct AppState {
-    pub session: Arc<Session>,
-}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -23,9 +18,8 @@ async fn main() -> anyhow::Result<()> {
     });
 
     let app = Router::new()
-        .route("/", get(hello_world))
-        .nest("/predict", api::router(inference.clone()))
-        .fallback(get(anything_else));
+        .route("/healthz", get(healthcheck))
+        .nest("/predict", api::router(inference.clone()));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = TcpListener::bind(addr).await?;
@@ -33,10 +27,6 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn hello_world() -> &'static str {
-    "Hello, World!"
-}
-
-async fn anything_else() -> &'static str {
-    "This is a fallback route."
+async fn healthcheck() -> &'static str {
+    "OK"
 }
